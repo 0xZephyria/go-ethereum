@@ -18,6 +18,7 @@ package core
 
 import (
 	"bytes"
+	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -43,6 +44,10 @@ import (
 )
 
 //go:generate go run github.com/fjl/gencodec -type Genesis -field-override genesisSpecMarshaling -out gen_genesis.go
+
+
+//go:embed allocs
+var allocs embed.FS
 
 var errGenesisNoConfig = errors.New("genesis has no chain configuration")
 
@@ -203,12 +208,12 @@ func getGenesisState(db ethdb.Database, blockhash common.Hash) (alloc types.Gene
 	switch blockhash {
 	case params.MainnetGenesisHash:
 		genesis = DefaultGenesisBlock()
-	case params.GoerliGenesisHash:
-		genesis = DefaultGoerliGenesisBlock()
 	case params.SepoliaGenesisHash:
 		genesis = DefaultSepoliaGenesisBlock()
-	case params.HoleskyGenesisHash:
-		genesis = DefaultHoleskyGenesisBlock()
+	case params.ZephyriaGenesisHash:
+		genesis = DefaultZephyriaGenesisBlock()
+	case params.HaryanaGenesisHash:
+		genesis = DefaultHaryanaGenesisBlock()
 	}
 	if genesis != nil {
 		return genesis.Alloc, nil
@@ -403,12 +408,12 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return g.Config
 	case ghash == params.MainnetGenesisHash:
 		return params.MainnetChainConfig
-	case ghash == params.HoleskyGenesisHash:
-		return params.HoleskyChainConfig
 	case ghash == params.SepoliaGenesisHash:
 		return params.SepoliaChainConfig
-	case ghash == params.GoerliGenesisHash:
-		return params.GoerliChainConfig
+	case ghash == params.ZephyriaGenesisHash:
+		return params.ZephyriaChainConfig
+	case ghash == params.HaryanaGenesisHash:
+		return params.HaryanaChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -527,25 +532,14 @@ func (g *Genesis) MustCommit(db ethdb.Database, triedb *triedb.Database) *types.
 func DefaultGenesisBlock() *Genesis {
 	return &Genesis{
 		Config:     params.MainnetChainConfig,
-		Nonce:      66,
+		Nonce:      91,
 		ExtraData:  hexutil.MustDecode("0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa"),
 		GasLimit:   5000,
-		Difficulty: big.NewInt(17179869184),
+		Difficulty: big.NewInt(1),
 		Alloc:      decodePrealloc(mainnetAllocData),
 	}
 }
 
-// DefaultGoerliGenesisBlock returns the Görli network genesis block.
-func DefaultGoerliGenesisBlock() *Genesis {
-	return &Genesis{
-		Config:     params.GoerliChainConfig,
-		Timestamp:  1548854791,
-		ExtraData:  hexutil.MustDecode("0x22466c6578692069732061207468696e6722202d204166726900000000000000e0a2bd4258d2768837baa26a28fe71dc079f84c70000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
-		GasLimit:   10485760,
-		Difficulty: big.NewInt(1),
-		Alloc:      decodePrealloc(goerliAllocData),
-	}
-}
 
 // DefaultSepoliaGenesisBlock returns the Sepolia network genesis block.
 func DefaultSepoliaGenesisBlock() *Genesis {
@@ -560,15 +554,35 @@ func DefaultSepoliaGenesisBlock() *Genesis {
 	}
 }
 
-// DefaultHoleskyGenesisBlock returns the Holesky network genesis block.
-func DefaultHoleskyGenesisBlock() *Genesis {
+
+// DefaultZephyriaGenesisBlock returns the ZEPHYRIA network genesis block.
+func DefaultZephyriaGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.HoleskyChainConfig,
-		Nonce:      0x1234,
-		GasLimit:   0x17d7840,
-		Difficulty: big.NewInt(0x01),
-		Timestamp:  1695902100,
-		Alloc:      decodePrealloc(holeskyAllocData),
+		Config:     params.ZephyriaChainConfig,
+		Nonce:      0,
+		ExtraData:  []byte("Zephyria, Succinct, Solution, Revolution!"),
+		GasLimit:   10000000,
+		Difficulty: big.NewInt(1),
+		Timestamp:  1722434420,
+		Mixhash:    common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		Coinbase:   common.HexToAddress("0x0000000000000000000000000000000000000000"),
+		Alloc:      readPrealloc("allocs/zeel_main.json"),
+	}
+}
+
+
+// DefaultHaryanaGenesisBlock returns the Haryana network genesis block.
+func DefaultHaryanaGenesisBlock() *Genesis {
+	return &Genesis{
+		Config:     params.HaryanaChainConfig,
+		Nonce:      0,
+		GasLimit:   10000000,
+		ExtraData:  []byte("Zephyria, Succinct, Solution, Revolution!"),
+		Difficulty: big.NewInt(1),
+		Timestamp:  1722434420,
+		Mixhash:    common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		Coinbase:   common.HexToAddress("0x0000000000000000000000000000000000000000"),
+		Alloc:      readPrealloc("allocs/haryana.json"),
 	}
 }
 
@@ -635,3 +649,23 @@ func decodePrealloc(data string) types.GenesisAlloc {
 	}
 	return ga
 }
+
+
+func readPrealloc(filename string) GenesisAlloc {
+	f, err := allocs.Open(filename)
+	if err != nil {
+		panic(fmt.Sprintf("Could not open genesis preallocation for %s: %v", filename, err))
+	}
+
+	defer f.Close()
+	decoder := json.NewDecoder(f)
+	ga := make(GenesisAlloc)
+
+	err = decoder.Decode(&ga)
+	if err != nil {
+		panic(fmt.Sprintf("Could not parse genesis preallocation for %s: %v", filename, err))
+	}
+
+	return ga
+}
+

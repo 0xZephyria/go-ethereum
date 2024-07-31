@@ -27,9 +27,9 @@ import (
 // Genesis hashes to enforce below configs on.
 var (
 	MainnetGenesisHash = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3")
-	HoleskyGenesisHash = common.HexToHash("0xb5f7f912443c940f21fd611f12828d75b534364ed9e95ca4e307729a4661bde4")
 	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
-	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
+	ZephyriaGenesisHash  = common.HexToHash("")
+	HaryanaGenesisHash = common.HexToHash("")
 )
 
 func newUint64(val uint64) *uint64 { return &val }
@@ -40,32 +40,8 @@ var (
 	// MainnetChainConfig is the chain parameters to run a node on the main network.
 	MainnetChainConfig = &ChainConfig{
 		ChainID:                       big.NewInt(1),
-		HomesteadBlock:                big.NewInt(1_150_000),
-		DAOForkBlock:                  big.NewInt(1_920_000),
-		DAOForkSupport:                true,
-		EIP150Block:                   big.NewInt(2_463_000),
-		EIP155Block:                   big.NewInt(2_675_000),
-		EIP158Block:                   big.NewInt(2_675_000),
-		ByzantiumBlock:                big.NewInt(4_370_000),
-		ConstantinopleBlock:           big.NewInt(7_280_000),
-		PetersburgBlock:               big.NewInt(7_280_000),
-		IstanbulBlock:                 big.NewInt(9_069_000),
-		MuirGlacierBlock:              big.NewInt(9_200_000),
-		BerlinBlock:                   big.NewInt(12_244_000),
-		LondonBlock:                   big.NewInt(12_965_000),
-		ArrowGlacierBlock:             big.NewInt(13_773_000),
-		GrayGlacierBlock:              big.NewInt(15_050_000),
-		TerminalTotalDifficulty:       MainnetTerminalTotalDifficulty, // 58_750_000_000_000_000_000_000
-		TerminalTotalDifficultyPassed: true,
-		ShanghaiTime:                  newUint64(1681338455),
-		CancunTime:                    newUint64(1710338135),
-		Ethash:                        new(EthashConfig),
-	}
-	// HoleskyChainConfig contains the chain parameters to run a node on the Holesky test network.
-	HoleskyChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(17000),
 		HomesteadBlock:                big.NewInt(0),
-		DAOForkBlock:                  nil,
+		DAOForkBlock:                  big.NewInt(0),
 		DAOForkSupport:                true,
 		EIP150Block:                   big.NewInt(0),
 		EIP155Block:                   big.NewInt(0),
@@ -74,16 +50,15 @@ var (
 		ConstantinopleBlock:           big.NewInt(0),
 		PetersburgBlock:               big.NewInt(0),
 		IstanbulBlock:                 big.NewInt(0),
-		MuirGlacierBlock:              nil,
+		MuirGlacierBlock:              big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		LondonBlock:                   big.NewInt(0),
-		ArrowGlacierBlock:             nil,
-		GrayGlacierBlock:              nil,
-		TerminalTotalDifficulty:       big.NewInt(0),
+		ArrowGlacierBlock:             big.NewInt(0),
+		GrayGlacierBlock:              big.NewInt(0),
+		TerminalTotalDifficulty:       MainnetTerminalTotalDifficulty, // 58_750_000_000_000_000_000_000
 		TerminalTotalDifficultyPassed: true,
-		MergeNetsplitBlock:            nil,
-		ShanghaiTime:                  newUint64(1696000704),
-		CancunTime:                    newUint64(1707305664),
+		ShanghaiTime:                  newUint64(1681338455),
+		CancunTime:                    newUint64(1710338135),
 		Ethash:                        new(EthashConfig),
 	}
 	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
@@ -111,9 +86,9 @@ var (
 		CancunTime:                    newUint64(1706655072),
 		Ethash:                        new(EthashConfig),
 	}
-	// GoerliChainConfig contains the chain parameters to run a node on the Görli test network.
-	GoerliChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(5),
+	// ZephyriaChainConfig contains the chain parameters to run a node on the Görli test network.
+	ZephyriaChainConfig = &ChainConfig{
+		ChainID:                       big.NewInt(9191),
 		HomesteadBlock:                big.NewInt(0),
 		DAOForkBlock:                  nil,
 		DAOForkSupport:                true,
@@ -123,20 +98,47 @@ var (
 		ByzantiumBlock:                big.NewInt(0),
 		ConstantinopleBlock:           big.NewInt(0),
 		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(1_561_651),
-		MuirGlacierBlock:              nil,
-		BerlinBlock:                   big.NewInt(4_460_644),
-		LondonBlock:                   big.NewInt(5_062_605),
-		ArrowGlacierBlock:             nil,
-		TerminalTotalDifficulty:       big.NewInt(10_790_000),
+		IstanbulBlock:                 big.NewInt(0),
+		MuirGlacierBlock:              big.NewInt(0),
+		BerlinBlock:                   big.NewInt(0),
+		LondonBlock:                   big.NewInt(0),
+		ArrowGlacierBlock:             big.NewInt(0),
+		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: true,
-		ShanghaiTime:                  newUint64(1678832736),
-		CancunTime:                    newUint64(1705473120),
-		Clique: &CliqueConfig{
-			Period: 15,
-			Epoch:  30000,
-		},
+		ShanghaiTime:                  newUint64(0),
+		CancunTime:                    newUint64(0),
+		PragueTime:                    newUint64(0),
+		VerkleTime:                    newUint64(1722500194),
+		Ethash:                        new(EthashConfig),
 	}
+	// HaryanaChainConfig contains the chain parameters to run a node on the Haryana test network.
+	HaryanaChainConfig = &ChainConfig{
+		ChainID:                       big.NewInt(9991),
+		HomesteadBlock:                big.NewInt(0),
+		DAOForkBlock:                  nil,
+		DAOForkSupport:                true,
+		EIP150Block:                   big.NewInt(0),
+		EIP155Block:                   big.NewInt(0),
+		EIP158Block:                   big.NewInt(0),
+		ByzantiumBlock:                big.NewInt(0),
+		ConstantinopleBlock:           big.NewInt(0),
+		PetersburgBlock:               big.NewInt(0),
+		IstanbulBlock:                 big.NewInt(0),
+		MuirGlacierBlock:              nil,
+		BerlinBlock:                   big.NewInt(0),
+		LondonBlock:                   nil,
+		ArrowGlacierBlock:             nil,
+		GrayGlacierBlock:              nil,
+		TerminalTotalDifficulty:       big.NewInt(0),
+		TerminalTotalDifficultyPassed: true,
+		MergeNetsplitBlock:            nil,
+		ShanghaiTime:                  newUint64(0),
+		CancunTime:                    newUint64(0),
+		PragueTime:                    newUint64(0),
+		VerkleTime:                    newUint64(1722500194),
+		Ethash:                        new(EthashConfig),
+	}
+	
 	// AllEthashProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers into the Ethash consensus.
 	AllEthashProtocolChanges = &ChainConfig{
@@ -313,9 +315,9 @@ var (
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
 	MainnetChainConfig.ChainID.String(): "mainnet",
-	GoerliChainConfig.ChainID.String():  "goerli",
 	SepoliaChainConfig.ChainID.String(): "sepolia",
-	HoleskyChainConfig.ChainID.String(): "holesky",
+	ZephyriaChainConfig.ChainID.String():  "zephyria",
+	HaryanaChainConfig.ChainID.String(): "haryana",
 }
 
 // ChainConfig is the core config which determines the blockchain settings.
